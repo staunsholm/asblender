@@ -61,7 +61,9 @@ JSBlender.BlendFileHeader = function(data)
             throw new Error("Not a Blender .blend file!");
     }
 
-    switch (String.fromCharCode(data.readByte()))
+    var endian = String.fromCharCode(data.readByte());
+    console.log(endian);
+    switch (endian)
     {
         case JSBlender.BlendFileHeader.ENDIAN_BIG:
             data.endian = this.endian = JSBlender.BlendFileHeader.ENDIAN_BIG;

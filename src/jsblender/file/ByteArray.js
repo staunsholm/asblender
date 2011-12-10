@@ -22,7 +22,7 @@ JSBlender.ByteArray = function(data)
     //var uInt32Array = new Uint32Array(data);
     var int32Array = new Int32Array(data);
     var float32Array = new Float32Array(data);
-    var float64Array = new Float64Array(data);
+    var float64Array = new Float64Array(data, 0, data.length - data.length & 7);
 
     this.readMultiByte = function(length, charset)
     {
@@ -37,8 +37,21 @@ JSBlender.ByteArray = function(data)
 
     this.readInt = function()
     {
-        var i = int32Array[this.position>>2];
-        this.position += 4;
+        var tmp = int32Array[this.position >> 2];
+
+        var c1 = uInt8Array[this.position++];
+        var c2 = uInt8Array[this.position++];
+        var c3 = uInt8Array[this.position++];
+        var c4 = uInt8Array[this.position++];
+        var i;
+        if (this.endian === JSBlender.ByteArray.ENDIAN_BIG)
+        {
+            i = (c1 << 24) + (c2 << 16) + (c3 << 8) + c4;
+        }
+        else
+        {
+            i = (c4 << 24) + (c3 << 16) + (c2 << 8) + c1;
+        }
         return i;
     };
 
@@ -58,15 +71,35 @@ JSBlender.ByteArray = function(data)
 
     this.readShort = function()
     {
-        var i = int16Array[this.position >> 1];
-        this.position += 2;
+        var c1 = uInt8Array[this.position++];
+        var c2 = uInt8Array[this.position++];
+        var i;
+        if (this.endian === JSBlender.ByteArray.ENDIAN_BIG)
+        {
+            i = (c1 << 8) + c2;
+        }
+        else
+        {
+            i = (c2 << 8) + c1;
+        }
         return i;
     };
 
     this.readUnsignedShort = function()
     {
-        var i = uInt16Array[this.position >> 1];
-        this.position += 2;
+        var c1 = uInt8Array[this.position++];
+        var c2 = uInt8Array[this.position++];
+        var i;
+        if (this.endian === JSBlender.ByteArray.ENDIAN_BIG)
+        {
+            i = (c1 << 8) + c2;
+        }
+        else
+        {
+            i = (c2 << 8) + c1;
+        }
+
+        if (i < 0x7fff) i -= 0x8000;
         return i;
     };
 

@@ -187,7 +187,7 @@ JSBlender.BlendFile = function()
         var field;
         var result = new Object();
 
-        //console.log(indent+dna.types[struct.type]);
+        //output(indent+dna.types[struct.type]);
 
         for (var i = 0, l = struct.fields.length; i < l; i++)
         {
@@ -301,7 +301,7 @@ JSBlender.BlendFile.load = function(url, callback)
         else
         {
             // some error
-            console.log("Loading '" + url + "' failed");
+            output("Loading '" + url + "' failed");
         }
     }
 

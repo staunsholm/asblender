@@ -3,28 +3,119 @@
 <head>
     <meta charset="utf-8">
     <title>JSBlender Test</title>
+
+    <style>
+        body
+        {
+            background:  #444;
+            text-align: center;
+        }
+        textarea
+        {
+            margin-top: 20px;
+            width: 400px;
+            height: 300px;
+            display: inline-block;
+        }
+        #drop_zone {
+            border: 2px dashed #bbb;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            padding: 25px;
+            text-align: center;
+            font-size: 35px;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #222;
+            display: inline-block;
+            padding: 5px 10px 6px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 200%;
+            font-weight: bold;
+            line-height: 1;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 0px 0px 5px #999;
+            -webkit-box-shadow: 0px 0px 5px #999;
+            text-shadow: 0 -1px 1px #222;
+            border: 2px solid #999;
+            position: relative;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 
-    <script src="src/Main.js"></script>
-    <script src="src/jsblender/file/ByteArray.js"></script>
-    <script src="src/jsblender/dna/DNAField.js"></script>
-    <script src="src/jsblender/dna/DNAFieldInstance.js"></script>
-    <script src="src/jsblender/dna/DNARepository.js"></script>
-    <script src="src/jsblender/dna/DNAStruct.js"></script>
-    <script src="src/jsblender/file/BHeadStruct.js"></script>
-    <script src="src/jsblender/file/BlendFile.js"></script>
-    <script src="src/jsblender/file/BlendFileHeader.js"></script>
+<script src="src/Main.js"></script>
+<script src="src/jsblender/file/ByteArray.js"></script>
+<script src="src/jsblender/dna/DNAField.js"></script>
+<script src="src/jsblender/dna/DNAFieldInstance.js"></script>
+<script src="src/jsblender/dna/DNARepository.js"></script>
+<script src="src/jsblender/dna/DNAStruct.js"></script>
+<script src="src/jsblender/file/BHeadStruct.js"></script>
+<script src="src/jsblender/file/BlendFile.js"></script>
+<script src="src/jsblender/file/BlendFileHeader.js"></script>
 
-    <button id="start">START</button>
-    <textarea style="width:80%; height:400px" id="output"></textarea>
+<div id="drop_zone">You can drop your own .blend file here - or try...</div>
+<output id="list"></output>
 
-    <script>
-        document.getElementById('start').onclick = function()
+<script>
+    function handleFileSelect(evt)
+    {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        var files = evt.dataTransfer.files; // FileList object.
+
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++)
         {
-            new JSBlenderTest.Main();
-        };
-    </script>
+            output.push('<li><strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
+                    f.size, ' bytes, last modified: ',
+                    f.lastModifiedDate.toLocaleDateString(), '</li>');
+        }
+        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+    }
+
+    function handleDragOver(evt)
+    {
+        evt.stopPropagation();
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    }
+
+    // Setup the dnd listeners.
+    var dropZone = document.getElementById('drop_zone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+</script>
+
+<div><button id="start1">tiefighterlowtriang.blend</button></div>
+<div><button id="start2">threecubes.blend</button></div>
+<div><button id="start3">crystal_cube.blend</button></div>
+<textarea id="output"></textarea>
+
+<script>
+    document.getElementById('start1').onclick = function()
+    {
+        new JSBlenderTest.Main('src/assets/tiefighterlowtriang.blend');
+    };
+    document.getElementById('start2').onclick = function()
+    {
+        new JSBlenderTest.Main('src/assets/threecubes.blend');
+    };
+    document.getElementById('start3').onclick = function()
+    {
+        new JSBlenderTest.Main('src/assets/crystal_cube.blend');
+    };
+</script>
 
 </body>
 </html>

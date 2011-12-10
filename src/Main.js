@@ -5,10 +5,15 @@
 
 var JSBlenderTest = JSBlenderTest || {};
 
-JSBlenderTest.Main = function()
+JSBlenderTest.Main = function(url)
 {
+    var outputDiv = document.getElementById('output');
+    var outputText = "";
+    var startTime = new Date().getTime();
+
     //JSBlender.BlendFile.load('src/assets/tiefighterlowtriang.blend', init);
-    JSBlender.BlendFile.load('src/assets/threecubes.blend', init);
+    //JSBlender.BlendFile.load('src/assets/threecubes.blend', init);
+    JSBlender.BlendFile.load(url, init);
     //JSBlender.BlendFile.load('src/assets/crystal_cube.blend', init);
 
     function init(blenderData)
@@ -27,6 +32,8 @@ JSBlenderTest.Main = function()
 
             buildScene(scene);
         }
+
+        outputDiv.innerHTML = "Parse time: " + (new Date().getTime() - startTime) + "ms\n\n" + outputText;
     }
 
     /**
@@ -147,9 +154,8 @@ JSBlenderTest.Main = function()
         }
     }
 
-    var outputDiv = document.getElementById('output');
     function output(str)
     {
-        outputDiv.innerHTML += str +"\n";
+        outputText += str +"\n";
     }
 }
