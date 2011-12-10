@@ -28,7 +28,7 @@ package {
 			init();
 		}
 		
-		private function init():void {
+		private function init() {
 		
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -40,7 +40,7 @@ package {
 			this.container.x = stage.stageWidth * 0.5;
 			this.container.y = stage.stageHeight * 0.5;
 			
-			var blend:BlendFile = new BlendFile();
+			var blend = new BlendFile();
 			
 			blend.read(new BlenderData());
 			
@@ -50,7 +50,7 @@ package {
 			// Blender can have multiple scenes, not sure yet how to get the active scene.
 			// So lets simply take the first one.
 			if (blend.scenes.length) {
-				var scene:Object = blend.scenes[0];
+				var scene = blend.scenes[0];
 				
 				buildScene(scene);
 			}
@@ -61,14 +61,14 @@ package {
 		 * 
 		 * @param scene
 		 */
-		private function buildScene(scene:Object):void {
+		private function buildScene(scene) {
 
-			var obj:Object = scene.base.first;
+			var obj = scene.base.first;
 			
 			while (obj) {
 				// grab the Blender Object.
 				// The Blender Object defines rotation, scale, translation etc.
-				var object:Object = obj.object; 
+				var object = obj.object;
 				
 				trace("Object name: " + object.id.name + " type: " + object.type + " matrix: " + object.obmat);
 				
@@ -101,15 +101,15 @@ package {
 		 * 
 		 * @param	mesh
 		 */
-		private function buildMesh(mesh:Object):void {
-			var numVertices:int = mesh.totvert;
-			var numFaces:int = mesh.totface;
-			var i:int;
+		private function buildMesh(mesh) {
+			var numVertices = mesh.totvert;
+			var numFaces = mesh.totface;
+			var i;
 			
 			trace(" -> #verts : " + numVertices);
 		
 			for (i = 0; i < numVertices; i++) {	
-				var v:Object = mesh.mvert[i];
+				var v = mesh.mvert[i];
 				
 				var x:Number = v.co[0];
 				var y:Number = v.co[1];
@@ -121,18 +121,18 @@ package {
 			trace(" -> #faces : " + numFaces);
 			
 			for (i = 0; i < numFaces; i++) {	
-				var f:Object = mesh.mface[i];
+				var f = mesh.mface[i];
 				
-				var v1:int = f.v1;
-				var v2:int = f.v2;
-				var v3:int = f.v3;
-				var v4:int = f.v4;
+				var v1 = f.v1;
+				var v2 = f.v2;
+				var v3 = f.v3;
+				var v4 = f.v4;
 				
 				trace(" -> -> indices: " + v1 + " " + v2 + " " + v3 + " " + v4);
 				
 				if (mesh.mtface) {
 					// UV coords are defined
-					var tf:Object = mesh.mtface[i];
+					var tf = mesh.mtface[i];
 					
 					trace(" -> -> -> uv: " + tf.uv);
 				}
@@ -142,8 +142,8 @@ package {
 		/**
 		 * Prints out the DNA as contained in the .blend
 		 */
-		private function printDNA(blend:BlendFile):void {
-			var struct:DNAStruct;
+		private function printDNA(blend) {
+			var struct;
 			var field:DNAField;
 			
 			for each (struct in blend.dna.structs) {
@@ -160,7 +160,7 @@ package {
 		/**
 		 * 
 		 */
-		private function printObject(object:Object):void {
+		private function printObject(object) {
 			for (var key:String in object) {
 				trace(key + " : " + object[key]);
 			}

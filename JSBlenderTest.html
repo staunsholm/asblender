@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSBlender Test</title>
+</head>
+<body>
+
+    <script src="src/Main.js"></script>
+    <script src="src/jsblender/file/ByteArray.js"></script>
+    <script src="src/jsblender/dna/DNAField.js"></script>
+    <script src="src/jsblender/dna/DNAFieldInstance.js"></script>
+    <script src="src/jsblender/dna/DNARepository.js"></script>
+    <script src="src/jsblender/dna/DNAStruct.js"></script>
+    <script src="src/jsblender/file/BHeadStruct.js"></script>
+    <script src="src/jsblender/file/BlendFile.js"></script>
+    <script src="src/jsblender/file/BlendFileHeader.js"></script>
+
+    <button id="start">START</button>
+    <textarea style="width:80%; height:400px" id="output"></textarea>
+
+    <script>
+        document.getElementById('start').onclick = function()
+        {
+            new JSBlenderTest.Main();
+        };
+    </script>
+
+</body>
+</html>
