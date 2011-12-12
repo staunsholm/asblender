@@ -7,7 +7,10 @@ var JSBlender = JSBlender || {};
 
 JSBlender.DNAFieldInstance = function(field, pointerSize)
 {
-    if (pointerSize === undefined) pointerSize = 4;
+    if (pointerSize === undefined)
+    {
+        pointerSize = 4;
+    }
 
     /**
      *
@@ -37,7 +40,8 @@ JSBlender.DNAFieldInstance = function(field, pointerSize)
                 {
                     result.push(data.readInt());
                 }
-            } else if (this.field.getIsSimpleType())
+            }
+            else if (this.field.getIsSimpleType())
             {
                 switch (this.field.type)
                 {

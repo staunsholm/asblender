@@ -71,17 +71,11 @@ JSBlender.ByteArray = function(data)
 
     this.readShort = function()
     {
-        var c1 = uInt8Array[this.position++];
-        var c2 = uInt8Array[this.position++];
-        var i;
-        if (this.endian === JSBlender.ByteArray.ENDIAN_BIG)
-        {
-            i = (c1 << 8) + c2;
-        }
-        else
-        {
-            i = (c2 << 8) + c1;
-        }
+        var i = this.readUnsignedShort();
+
+        // handle negative values
+        if (i >= 0x8000) i -= 0x10000;
+
         return i;
     };
 
@@ -98,8 +92,6 @@ JSBlender.ByteArray = function(data)
         {
             i = (c2 << 8) + c1;
         }
-
-        if (i < 0x7fff) i -= 0x8000;
         return i;
     };
 
@@ -117,3 +109,10 @@ JSBlender.ByteArray = function(data)
         return i;
     };
 };
+
+function test(c1,c2)
+{
+    var i = (c2 << 8) + c1;
+    if ((i >> 8) >= 0x80) i = i - 0xffff - 1;
+    return i;
+}

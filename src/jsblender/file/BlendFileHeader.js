@@ -49,7 +49,8 @@ JSBlender.BlendFileHeader = function(data)
         throw new Error("Not a Blender .blend file!");
     }
 
-    switch (String.fromCharCode(data.readByte()))
+    var pointerSize = String.fromCharCode(data.readByte());
+    switch (pointerSize)
     {
         case JSBlender.BlendFileHeader.POINTERSIZE_4:
             this.pointerSize = 4;
@@ -62,7 +63,6 @@ JSBlender.BlendFileHeader = function(data)
     }
 
     var endian = String.fromCharCode(data.readByte());
-    console.log(endian);
     switch (endian)
     {
         case JSBlender.BlendFileHeader.ENDIAN_BIG:
@@ -80,7 +80,7 @@ JSBlender.BlendFileHeader = function(data)
     /**
      *
      */
-    this.toString()
+    this.info = function()
     {
         var s = "";
         s += "pointerSize: " + this.pointerSize;

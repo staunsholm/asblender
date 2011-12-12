@@ -87,13 +87,13 @@ JSBlender.DNAField = function(typeIndex, nameIndex)
     this.getIsCType = function()
     {
         return (
-                this.type == "void" ||
-                        this.type == "char" ||
-                        this.type == "short" ||
-                        this.type == "int" ||
-                        this.type == "float" ||
-                        this.type == "double"
-                );
+            this.type == "void" ||
+            this.type == "char" ||
+            this.type == "short" ||
+            this.type == "int" ||
+            this.type == "float" ||
+            this.type == "double"
+        );
     }
 
     /**
@@ -101,7 +101,7 @@ JSBlender.DNAField = function(typeIndex, nameIndex)
      */
     this.getIsPointer = function()
     {
-        return (this.name.charAt(0) == "*");
+        return (this.name[0] == "*");
     }
 
     /**
@@ -113,6 +113,7 @@ JSBlender.DNAField = function(typeIndex, nameIndex)
         {
             return true;
         }
+
         return this.getIsCType();
     }
 
@@ -123,7 +124,7 @@ JSBlender.DNAField = function(typeIndex, nameIndex)
     {
         var name = this.name;
 
-        while (name.charAt(0) == "*")
+        while (name[0] == "*")
         {
             name = name.substr(1);
         }

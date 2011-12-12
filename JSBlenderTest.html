@@ -4,16 +4,21 @@
     <meta charset="utf-8">
     <title>JSBlender Test</title>
 
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    
     <style>
         body
         {
             background:  #444;
             text-align: center;
+            font-family: 'Ubuntu Mono', sans-serif;
         }
         textarea
         {
+            font-family: 'Ubuntu Mono', sans-serif;
+            font-size: 100%;
             margin-top: 20px;
-            width: 400px;
+            width: 600px;
             height: 300px;
             display: inline-block;
         }
@@ -29,20 +34,20 @@
             margin-bottom: 20px;
         }
 
-        button {
+        button
+        {
+            font-family: 'Ubuntu Mono', sans-serif;
             background: #222;
             display: inline-block;
             padding: 5px 10px 6px;
             color: #fff;
             text-decoration: none;
-            font-size: 200%;
-            font-weight: bold;
+            font-size: 150%;
             line-height: 1;
             -moz-border-radius: 5px;
             -webkit-border-radius: 5px;
             -moz-box-shadow: 0px 0px 5px #999;
             -webkit-box-shadow: 0px 0px 5px #999;
-            text-shadow: 0 -1px 1px #222;
             border: 2px solid #999;
             position: relative;
             cursor: pointer;
@@ -73,15 +78,30 @@
 
         var files = evt.dataTransfer.files; // FileList object.
 
-        // files is a FileList of File objects. List some properties.
-        var output = [];
-        for (var i = 0, f; f = files[i]; i++)
+        if (files.length == 0)
         {
-            output.push('<li><strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
-                    f.size, ' bytes, last modified: ',
-                    f.lastModifiedDate.toLocaleDateString(), '</li>');
+            alert('Ehm, something went wront. Try again, please.');
+            return;
         }
-        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+
+        if (files.length > 1)
+        {
+            alert("One file at a time, please.");
+            return;
+        }
+
+        var file = files[0];
+        var name = file.name;
+        var size = file.size;
+
+        var reader = new FileReader();
+        reader.onload = function(e)
+        {
+            new JSBlenderTest.Main(name, e.target.result);
+        };
+
+        reader.readAsArrayBuffer(file);
+
     }
 
     function handleDragOver(evt)
@@ -97,23 +117,23 @@
     dropZone.addEventListener('drop', handleFileSelect, false);
 </script>
 
-<div><button id="start1">tiefighterlowtriang.blend</button></div>
-<div><button id="start2">threecubes.blend</button></div>
-<div><button id="start3">crystal_cube.blend</button></div>
+<div><button id="start1">Skull.blend</button></div>
+<div><button id="start2">EXPEDIT.blend</button></div>
+<div><button id="start3">threecubes.blend</button></div>
 <textarea id="output"></textarea>
 
 <script>
     document.getElementById('start1').onclick = function()
     {
-        new JSBlenderTest.Main('src/assets/tiefighterlowtriang.blend');
+        new JSBlenderTest.Main('src/assets/Skull.blend');
     };
     document.getElementById('start2').onclick = function()
     {
-        new JSBlenderTest.Main('src/assets/threecubes.blend');
+        new JSBlenderTest.Main('src/assets/EXPEDIT.blend');
     };
     document.getElementById('start3').onclick = function()
     {
-        new JSBlenderTest.Main('src/assets/crystal_cube.blend');
+        new JSBlenderTest.Main('src/assets/threecubes.blend');
     };
 </script>
 

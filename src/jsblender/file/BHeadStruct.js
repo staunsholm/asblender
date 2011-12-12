@@ -43,21 +43,15 @@ JSBlender.BHeadStruct = function(data, pointerSize, charSet)
     /**
      * constructor code
      */
-    if (!pointerSize)
-    {
-        pointerSize = 4;
-    }
-    if (!charSet)
-    {
-        charSet = "iso-8859-1";
-    }
+    if (pointerSize === undefined) pointerSize = 4;
+    if (charSet === undefined) charSet = "iso-8859-1";
 
     this.code = data.readMultiByte(4, charSet);
     this.size = data.readInt();
     this.pointer = "" + data.readInt();
-    if (pointerSize != 4)
+    if (pointerSize == 8)
     {
-        this.pointer += "" + data.readInt();
+        this.pointer += "T" + data.readInt();
     }
     this.sdnaIndex = data.readInt();
     this.count = data.readInt();

@@ -27,16 +27,16 @@ JSBlender.BlendFile = function()
      */
     this.scenes;
 
-    var _blockByPointer;
-    var _readPointers;
-    var _pointerData;
+    var blockByPointer = null;
+    var readPointers = null;
+    var pointerData = null;
 
     /**
      * returns a BHeadStruct
      */
     this.getBlockByPointer = function(pointer)
     {
-        return _blockByPointer[pointer];
+        return blockByPointer[pointer];
     }
 
     /**
@@ -55,7 +55,7 @@ JSBlender.BlendFile = function()
             }
         }
         return result;
-    }
+    };
 
     /**
      * data is a ByteArray
@@ -66,15 +66,15 @@ JSBlender.BlendFile = function()
 
         this.header = new JSBlender.BlendFileHeader(data);
 
-        _blockByPointer = new Object();
-        _pointerData = new Object();
-        _readPointers = new Object();
+        blockByPointer = new Object();
+        pointerData = new Object();
+        readPointers = new Object();
 
         this.readBlocks(data);
         this.readDNA(data);
 
         this.scenes = this.readType(data, "Scene");
-    }
+    };
 
     /**
      * returns an array of type blocks
@@ -88,11 +88,12 @@ JSBlender.BlendFile = function()
 
         for (i = 0,l = blocks.length; i < l; i++)
         {
+            console.log(blocks[i]);
             result.push(this.readBlock(data, blocks[i]));
         }
 
         return result;
-    }
+    };
 
     /**
      * Read all block headers
@@ -106,11 +107,11 @@ JSBlender.BlendFile = function()
         while (block.code != "ENDB")
         {
             this.blocks.push(block);
-            _blockByPointer[block.pointer] = block;
+            blockByPointer[block.pointer] = block;
             data.position += block.size;
             block = new JSBlender.BHeadStruct(data, this.header.pointerSize, this.header.charSet);
         }
-    }
+    };
 
     /**
      *
@@ -123,7 +124,7 @@ JSBlender.BlendFile = function()
             data.position = dnaBlock.position;
             this.dna = new JSBlender.DNARepository(data, this.header);
         }
-    }
+    };
 
     /**
      *
@@ -142,7 +143,7 @@ JSBlender.BlendFile = function()
         }
 
         return s;
-    }
+    };
 
     /**
      *
@@ -150,12 +151,12 @@ JSBlender.BlendFile = function()
     this.readPointer = function(data)
     {
         var s = "" + data.readInt();
-        if (this.header.pointerSize > 4)
+        if (this.header.pointerSize == 8)
         {
-            s += data.readInt();
+            s += "T" + data.readInt();
         }
         return s;
-    }
+    };
 
     this.readBlock = function(data, block)
     {
@@ -180,7 +181,7 @@ JSBlender.BlendFile = function()
         }
 
         return result;
-    }
+    };
 
     this.readStruct = function(data, struct)
     {
@@ -196,7 +197,7 @@ JSBlender.BlendFile = function()
         }
 
         return result;
-    }
+    };
 
     /**
      *
@@ -209,16 +210,17 @@ JSBlender.BlendFile = function()
         {
             var pointer = this.readPointer(data);
 
-            if (pointer != "0" && !_readPointers[pointer])
+            if (pointer != "0" && pointer != "0T0" && !readPointers[pointer])
             {
-                _readPointers[pointer] = 1;
-                object[shortName] = _pointerData[pointer] = this.dereferencePointer(data, pointer);
+                readPointers[pointer] = 1;
+                object[shortName] = pointerData[pointer] = this.dereferencePointer(data, pointer);
             }
             else
             {
-                object[shortName] = _pointerData[pointer];
+                object[shortName] = pointerData[pointer];
             }
-        } else if (field.getIsSimpleType())
+        }
+        else if (field.getIsSimpleType())
         {
             var instance = new JSBlender.DNAFieldInstance(field, this.header.pointerSize);
             var value = instance.read(data);
@@ -244,7 +246,7 @@ JSBlender.BlendFile = function()
                 data.position += field.length;
             }
         }
-    }
+    };
 
     /**
      *
@@ -263,7 +265,7 @@ JSBlender.BlendFile = function()
         data.position = position;
 
         return result;
-    }
+    };
 
     /**
      *
@@ -282,8 +284,8 @@ JSBlender.BlendFile = function()
         }
 
         return null;
-    }
-}
+    };
+};
 
 JSBlender.BlendFile.load = function(url, callback)
 {
@@ -306,4 +308,4 @@ JSBlender.BlendFile.load = function(url, callback)
     }
 
     xhr.send();
-}
+};

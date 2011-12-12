@@ -5,16 +5,23 @@
 
 var JSBlenderTest = JSBlenderTest || {};
 
-JSBlenderTest.Main = function(url)
+JSBlenderTest.Main = function(url, data)
 {
     var outputDiv = document.getElementById('output');
     var outputText = "";
     var startTime = new Date().getTime();
 
-    //JSBlender.BlendFile.load('src/assets/tiefighterlowtriang.blend', init);
-    //JSBlender.BlendFile.load('src/assets/threecubes.blend', init);
-    JSBlender.BlendFile.load(url, init);
-    //JSBlender.BlendFile.load('src/assets/crystal_cube.blend', init);
+    if (data !== undefined)
+    {
+        init(new JSBlender.ByteArray(data));
+    }
+    else
+    {
+        //JSBlender.BlendFile.load('src/assets/tiefighterlowtriang.blend', init);
+        //JSBlender.BlendFile.load('src/assets/threecubes.blend', init);
+        JSBlender.BlendFile.load(url, init);
+        //JSBlender.BlendFile.load('src/assets/crystal_cube.blend', init);
+    }
 
     function init(blenderData)
     {
@@ -22,7 +29,7 @@ JSBlenderTest.Main = function(url)
 
         blend.read(blenderData);
         // Uncomment the following line to trace out the complete DNA
-        printDNA(blend);
+        //printDNA(blend);
 
         // Blender can have multiple scenes, not sure yet how to get the active scene.
         // So lets simply take the first one.
@@ -51,16 +58,13 @@ JSBlenderTest.Main = function(url)
             // The Blender Object defines rotation, scale, translation etc.
             var object = obj.object;
 
-            output("Object name: " + object.id.name + " type: " + object.type + " matrix: " + object.obmat);
-
-            // Uncomment following line to show props, guess you'll be using this one a lot :-)
-            output(object);
-
-            if (object.data)
+            if (object && object.data)
             {
+                output("Object name: " + object.id.name + " type: " + object.type + " matrix: " + object.obmat);
+
                 switch (object.type)
                 {
-                    case 1:	// Mesh
+                    case 1:    // Mesh
                         output(" -> Mesh: " + object.data.id.name);
                         buildMesh(object.data);
                         break;
@@ -71,6 +75,7 @@ JSBlenderTest.Main = function(url)
                         output(" -> Camera: " + object.data.id.name);
                         break;
                     default:
+                        console.log("unknown type: " + object.type);
                         break;
                 }
             }
@@ -82,7 +87,7 @@ JSBlenderTest.Main = function(url)
     /**
      * Builds a Blender Mesh.
      *
-     * @param	mesh
+     * @param    mesh
      */
     function buildMesh(mesh)
     {
@@ -139,14 +144,14 @@ JSBlenderTest.Main = function(url)
         var field;
         var i, i2, l, l2;
 
-        for (i = 0, l = structs.length; i < l; i++)
+        for (i = 0,l = structs.length; i < l; i++)
         {
             struct = structs[i];
             type = blend.dna.types[struct.type];
 
             output(type);
 
-            for (i2 = 0, l2 = struct.fields.length; i2 < l2; i2++)
+            for (i2 = 0,l2 = struct.fields.length; i2 < l2; i2++)
             {
                 field = struct.fields[i2];
                 output(" -> " + field.type + " " + field.name);
@@ -156,6 +161,32 @@ JSBlenderTest.Main = function(url)
 
     function output(str)
     {
-        outputText += str +"\n";
+        outputText += str + "\n";
+    }
+
+    function outputProps(obj, depth)
+    {
+        if (depth === undefined)
+        {
+            depth = 0;
+        }
+
+        for (var i in obj)
+        {
+            for (var i2 = 0; i2 < depth; i2++)
+            {
+                outputText += "  ";
+            }
+
+            if (typeof(obj[i]) == "object")
+            {
+                outputText += i + "\n";
+                outputProps(obj[i], depth + 1);
+            }
+            else
+            {
+                outputText += i + ": " + obj[i] + "\n";
+            }
+        }
     }
 }
